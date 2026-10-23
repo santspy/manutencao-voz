@@ -14,24 +14,19 @@ engine = create_engine(
 
 @pytest.fixture(name="session")
 def session_fixture():
-    # Cria as tabelas no banco em memória antes do teste
     SQLModel.metadata.create_all(engine)
     with Session(engine) as session:
         yield session
-    # Limpa o banco após o teste (opcional)
     SQLModel.metadata.drop_all(engine)
 
 @pytest.fixture(name="client")
 def client_fixture(session: Session):
-    # Sobrescreve a dependência get_session para usar o banco em memória
     def get_session_override():
         return session
-
     app.dependency_overrides[get_session] = get_session_override
     client = TestClient(app)
     yield client
     app.dependency_overrides.clear()
-
 
 def test_criar_os_mecanica(client: TestClient):
     response = client.post("/os?descricao=Rolamento+com+vibracao")
