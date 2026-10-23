@@ -1,4 +1,4 @@
-# 🎙️ Manutenção por Voz (Voice-to-OS)
+# Manutenção por Voz (Voice-to-OS)
 
 ![Status](https://img.shields.io/badge/status-concluído-brightgreen)
 ![Python](https://img.shields.io/badge/python-3.12-blue)
@@ -7,12 +7,12 @@
 ![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub_Actions-black)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-## 📖 Sobre o Projeto
+## Sobre o Projeto
 Este projeto resolve uma dor real da indústria: técnicos de manutenção de campo perdem muito tempo preenchendo relatórios em papel ou sistemas lentos no final do turno, resultando em dados imprecisos e perda de histórico.
 
 A solução é um PWA (Progressive Web App) de inspeção por voz. O técnico segura o botão, dita o problema (ex: "Rolamento do motor 3 com vibração"), e o sistema transcreve o áudio, classifica a categoria do problema (Mecânica, Elétrica, Geral) e gera uma Ordem de Serviço (OS) automaticamente no banco de dados.
 
-## 🖼️ Demonstração
+## Demonstração
 
 ### Interface de Inspeção por Voz
 <img width="1920" height="991" alt="Tela inicial" src="https://github.com/user-attachments/assets/acd2192c-18be-4a6e-aee5-2789e2776c87" />
@@ -28,7 +28,7 @@ A solução é um PWA (Progressive Web App) de inspeção por voz. O técnico se
 <img width="1901" height="915" alt="Actions github" src="https://github.com/user-attachments/assets/96dc5a35-1ca5-4221-80f9-f0a0b65657ef" />
 
 
-## 🚀 Tecnologias Utilizadas
+## Tecnologias Utilizadas
 * **Frontend:** HTML5, CSS3, JavaScript (Web Speech API para transcrição em tempo real).
 * **Backend:** Python 3.12, FastAPI, SQLModel (ORM).
 * **Banco de Dados:** PostgreSQL 16.
@@ -36,7 +36,7 @@ A solução é um PWA (Progressive Web App) de inspeção por voz. O técnico se
 * **Observabilidade:** Logs estruturados em JSON (Structlog) com `Correlation ID`.
 * **CI/CD:** GitHub Actions (Pytest + Gitleaks para segurança).
 
-## 🏗️ Arquitetura da Solução
+## Arquitetura da Solução
 
 ```text
 [ Celular/Navegador ] 
