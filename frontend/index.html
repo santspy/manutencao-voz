@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inspeção por Voz</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h2 { text-align: center; color: #333; }
+        #btnVoz { width: 100%; padding: 15px; font-size: 18px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; margin-bottom: 15px; }
+        #btnVoz.gravando { background-color: #dc3545; animation: pulse 1.5s infinite; }
+        #textoTranscrito { width: 100%; height: 80px; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; margin-bottom: 15px; resize: none; }
+        #btnSalvar { width: 100%; padding: 15px; font-size: 18px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        #statusMsg { margin-top: 15px; text-align: center; font-weight: bold; color: #555; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Nova Ordem de Serviço</h2>
+    
+    <button id="btnVoz">🎤 Segurar para Falar</button>
+    
+    <textarea id="textoTranscrito" placeholder="O texto da sua fala aparecerá aqui (ou digite manualmente)..."></textarea>
+    
+    <button id="btnSalvar">Salvar Ordem de Serviço</button>
+    
+    <div id="statusMsg"></div>
+</div>
+
+<script>
+    const btnVoz = document.getElementById('btnVoz');
+    const textoTranscrito = document.getElementById('textoTranscrito');
+    const btnSalvar = document.getElementById('btnSalvar');
+    const statusMsg = document.getElementById('statusMsg');
+
+    // Verifica se o navegador suporta a API de Voz
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    
+    if (SpeechRecognition) {
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'pt-BR';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        btnVoz.addEventListener('mousedown', () => {
+            try {
+                recognition.start();
+                btnVoz.classList.add('gravando');
+                btnVoz.innerText = '🔴 Ouvindo...';
+                statusMsg.innerText = '';
+            } catch(e) {
+                console.log("Já está gravando.");
+            }
+        });
+
+        btnVoz.addEventListener('mouseup', () => {
+            recognition.stop();
+            btnVoz.classList.remove('gravando');
+            btnVoz.innerText = '🎤 Segurar para Falar';
+        });
+
+        // Para funcionar no celular (touch)
+        btnVoz.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            try {
+                recognition.start();
+                btnVoz.classList.add('gravando');
+                btnVoz.innerText = '🔴 Ouvindo...';
+            } catch(e) {}
+        });
+
+        btnVoz.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            recognition.stop();
+            btnVoz.classList.remove('gravando');
+            btnVoz.innerText = '🎤 Segurar para Falar';
+        });
+
+        recognition.onresult = (event) => {
+            const texto = event.results[0][0].transcript;
+            textoTranscrito.value = texto;
+        };
+
+        recognition.onerror = (event) => {
+            console.error(event.error);
+            statusMsg.innerText = "Erro ao capturar voz. Use o teclado.";
+            statusMsg.style.color = "red";
+            btnVoz.classList.remove('gravando');
+            btnVoz.innerText = '🎤 Segurar para Falar';
+        };
+    } else {
+        btnVoz.style.display = 'none';
+        statusMsg.innerText = "Seu navegador não suporta voz. Digite o texto.";
+    }
+
+    // Função para salvar no Backend
+    btnSalvar.addEventListener('click', async () => {
+        const descricao = textoTranscrito.value.trim();
+        
+        if (!descricao) {
+            statusMsg.innerText = "Por favor, fale ou digite algo antes de salvar.";
+            statusMsg.style.color = "red";
+            return;
+        }
+
+        statusMsg.innerText = "Salvando...";
+        statusMsg.style.color = "#555";
+
+        try {
+            // Nota: O endpoint espera o parâmetro na URL por padrão no FastAPI, 
+            // então vamos enviar via query string para facilitar.
+            const url = `http://localhost:8000/os?descricao=${encodeURIComponent(descricao)}`;
+            
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Accept': 'application/json' }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                statusMsg.innerText = `OS #${data.id} criada com sucesso! (${data.categoria})`;
+                statusMsg.style.color = "green";
+                textoTranscrito.value = ""; // Limpa o campo
+            } else {
+                throw new Error('Falha na requisição');
+            }
+        } catch (error) {
+            statusMsg.innerText = "Erro ao conectar com o servidor.";
+            statusMsg.style.color = "red";
+            console.error(error);
+        }
+    });
+</script>
+
+</body>
+</html>
