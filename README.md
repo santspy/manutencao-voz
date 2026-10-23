@@ -44,72 +44,54 @@ A solução é um PWA (Progressive Web App) de inspeção por voz. O técnico se
        ▼
 [ Frontend Nginx ] ──(HTTP POST)──> [ Backend FastAPI ] ──(SQL)──> [ PostgreSQL ]
   (Porta 3000)                        (Porta 8000)
-Frontend: Servido via Nginx em um container Alpine super leve.
+````
+* **Frontend:** Servido via Nginx em um container Alpine super leve.
+* **Backend:** API REST que processa a regra de negócio e classifica o texto.
+* **Segurança:** Middleware de CORS configurado e pipeline de CI que escaneia segredos vazados.
+* **Logs:** Todas as requisições geram um log em JSON com um `correlation_id` único para facilitar o rastreio em ferramentas como Datadog/Grafana.
+## Como rodar o projeto localmente
 
-Backend: API REST que processa a regra de negócio e classifica o texto.
+### Pré-requisitos
+* Docker e Docker Compose instalados.
+* Navegador baseado em Chromium (Google Chrome ou Microsoft Edge) para suporte à Web Speech API.
 
-Segurança: Middleware de CORS configurado e pipeline de CI que escaneia segredos vazados.
 
-Logs: Todas as requisições geram um log em JSON com um correlation_id único para facilitar o rastreio em ferramentas como Datadog/Grafana.
-
-### Como rodar o projeto localmente
-Pré-requisitos
-Docker e Docker Compose instalados.
-
-Navegador baseado em Chromium (Google Chrome ou Microsoft Edge) para suporte à Web Speech API.
-
-Passo a passo
-Clone o repositório:
-
-bash
+### Passo a passo
+1. Clone o repositório:
+````bash
 git clone https://github.com/santspy/manutencao-voz.git
 cd manutencao-voz
-Suba os containers:
+````
 
-bash
+2. Suba os containers:
+````bash
 docker compose up --build -d
-Acesse a aplicação:
+````
 
-Frontend: http://localhost:3000
-
-Documentação da API (Swagger): http://localhost:8000/docs
+3. Acesse a aplicação:
+* **Frontend:** `http://localhost:3000`
+* **Documentação da API (Swagger):** `http://localhost:8000/docs`
 
 ## Testes Automatizados
 O projeto conta com testes unitários para validar a regra de negócio de classificação das Ordens de Serviço.
 Para rodar os testes localmente:
-
-bash
+````bash
 cd backend
 pip install -r requirements.txt
 pytest tests/ -v
-(Os testes também rodam automaticamente no GitHub Actions a cada Pull Request ou Push na branch main).
+````
+*(Os testes também rodam automaticamente no GitHub Actions a cada Pull Request ou Push na branch main).*
 
 ## Segurança e Boas Práticas
-Gitleaks: O pipeline de CI impede que senhas ou tokens acidentais sejam comitados.
-
-Healthchecks: O banco de dados PostgreSQL possui um healthcheck; a API só inicia depois que o banco está 100% pronto para receber conexões.
-
-CORS: Configurado estritamente para permitir a comunicação entre o Frontend e o Backend.
-
-Logs Sanitizados: O sistema não salva áudio bruto nem dados sensíveis nos logs, apenas metadados da requisição.
+* **Gitleaks:** O pipeline de CI impede que senhas ou tokens acidentais sejam comitados.
+* **Healthchecks:** O banco de dados PostgreSQL possui um healthcheck; a API só inicia depois que o banco está 100% pronto para receber conexões.
+* **CORS:** Configurado estritamente para permitir a comunicação entre o Frontend e o Backend.
+* **Logs Sanitizados:** O sistema não salva áudio bruto nem dados sensíveis nos logs, apenas metadados da requisição.
 
 ## Autor
-Orlando Santana (santspy)
-
-LinkedIn: Orlando Santana
-
-GitHub: @santspy
+**Orlando Santana (santspy)**
+* LinkedIn: [Orlando Santana](https://www.linkedin.com/in/orlandosantana-ads/)
+* GitHub: [@santspy](https://github.com/santspy)
 
 ## Licença
 Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
-
-## Demonstração
-
-### Interface de Inspeção por Voz
-![Frontend do Sistema](images/frontend.png)
-
-### Documentação da API (Swagger)
-![Swagger UI](images/swagger.png)
-
-### Pipeline de CI/CD (GitHub Actions)
-![GitHub Actions](images/actions.png)
