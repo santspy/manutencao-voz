@@ -15,13 +15,18 @@ A solução é um PWA (Progressive Web App) de inspeção por voz. O técnico se
 ## 🖼️ Demonstração
 
 ### Interface de Inspeção por Voz
-![Frontend do Sistema](images/frontend.png)
+<img width="1920" height="991" alt="Tela inicial" src="https://github.com/user-attachments/assets/acd2192c-18be-4a6e-aee5-2789e2776c87" />
+
 
 ### Documentação da API (Swagger)
-![Swagger UI](images/swagger.png)
+<img width="1920" height="946" alt="{44DED190-7AA8-47D3-BE8B-131A42745C73}" src="https://github.com/user-attachments/assets/caa32afe-bed4-432b-b980-472210d64f94" />
+<img width="1917" height="991" alt="Criação de OS" src="https://github.com/user-attachments/assets/88b67752-ceec-47e4-9d2e-d81f61a0afca" />
+
+
 
 ### Pipeline de CI/CD (GitHub Actions)
-![GitHub Actions](images/actions.png)
+<img width="1901" height="915" alt="Actions github" src="https://github.com/user-attachments/assets/96dc5a35-1ca5-4221-80f9-f0a0b65657ef" />
+
 
 ## 🚀 Tecnologias Utilizadas
 * **Frontend:** HTML5, CSS3, JavaScript (Web Speech API para transcrição em tempo real).
